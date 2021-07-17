@@ -5,7 +5,7 @@ class InputFormsCheck(unittest.TestCase):
 
     #Opening browser.
     def setUp(self):
-        self.driver = webdriver.Chrome(r'C:\Users\pc\Downloads\chromedriver.exe')
+        self.driver = webdriver.Chrome("/webdrivers/chromedriver")
 
     #Testing Single Input Field.    
     def test_singleInputField(self):

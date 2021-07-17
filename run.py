@@ -18,7 +18,6 @@ def open_yandex_url():
     if OS.sysname == "Windows":
         DRIVER = webdriver.Chrome(PATH_WIN)
     DRIVER.get("https://yandex.ru/")
-    title = DRIVER.title
 
 
 def enter_question():
@@ -29,31 +28,32 @@ def enter_question():
 
 
 def find_curent_url():
-    current_url = None
     elems = DRIVER.find_elements_by_tag_name('a')
     for elem in elems:
         href = elem.get_attribute('href')
         if href == "https://www.avtodispetcher.ru/distance/":
-            current_url = elem
-            break
-    return current_url
+            return elem
+    return None
 
 
-def go_to_curent_url(url):
+def go_to_curent_url(elem):
     """Найдя нужный результат с этого сайта – пользователь кликает на данном результате и переходит на сайт www.avtodispetcher.ru/distance/ """
-    if url:
-        curent_url = DRIVER.get("https://www.avtodispetcher.ru/distance/")
-    time.sleep(5)
-    
-    
+    if elem:
+        elem.click()
 
-# def enter_locations():
-#     """5. Убедившись, что открылась верная ссылка, пользователь вводит следующие значения в поля:
-#         a. Поле «Откуда» - «Тула»
-#         b. Поле «Куда» - «Санкт-Петербург»
-#         c. Поле «Расход топлива» - «9»
-#         d. Поле «Цена топлива» - «46»"""
-#     pass
+    time.sleep(5)
+      
+    
+def enter_locations():
+    global DRIVER
+    title = DRIVER.title
+    """5. Убедившись, что открылась верная ссылка, пользователь вводит следующие значения в поля:
+        a. Поле «Откуда» - «Тула»
+        b. Поле «Куда» - «Санкт-Петербург»
+        c. Поле «Расход топлива» - «9»
+        d. Поле «Цена топлива» - «46»"""
+    time.sleep(10)
+    pass
 
 
 # def click_find_result():
@@ -94,12 +94,15 @@ def close_ssesion():
 def main():
     open_yandex_url()
     enter_question()
-    url = find_curent_url()
+    elem = find_curent_url()
+    if elem:
+        go_to_curent_url(elem)
+
     # global DRIVER
     # DRIVER = webdriver.Chrome(PATH_LINUX)
-    # url = True
-    go_to_curent_url(url)
-    # enter_locations()
+    # site = DRIVER.get("https://www.avtodispetcher.ru/distance/")
+    
+    enter_locations()
     # click_find_result()
     # check_results()
     # click_change_trip()
