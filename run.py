@@ -3,6 +3,7 @@ from selenium.webdriver.common.keys import Keys
 # from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 import time
 import os
+import re
 
 
 PATH_LINUX = os.getcwd() + "/webdrivers/chromedriver"
@@ -38,14 +39,16 @@ def find_curent_url():
     for elem in elems:
         href = elem.get_attribute('href')
         if href == "https://www.avtodispetcher.ru/distance/":
-            return elem
+            return True
 
 
-def go_to_curent_url(elem):
+def go_to_curent_url():
     """Найдя нужный результат с этого сайта – пользователь кликает на данном результате и переходит на сайт www.avtodispetcher.ru/distance/ """
-    if elem:
-        elem.click()
-        return elem
+    elems = DRIVER.find_elements_by_tag_name('a')
+    for elem in elems:
+        href = elem.get_attribute('href')
+        if href == "https://www.avtodispetcher.ru/distance/":
+            elem.click()
 
    
 def enter_locations():
@@ -56,9 +59,9 @@ def enter_locations():
         d. Поле «Цена топлива» - «46»"""
     global DRIVER
     # тут нужно запилить проверку на корректность ссылки. туда ли пришел
-    DRIVER.switch_to_window(window_name=DRIVER.window_handles[0])
-    DRIVER.close()
-    DRIVER.switch_to_window(window_name=DRIVER.window_handles[0])
+    tabs = DRIVER.window_handles
+    DRIVER.switch_to.window(tabs[1])
+
 
     start_point = DRIVER.find_element_by_name("from")
     start_point.send_keys("Тула")
@@ -79,17 +82,25 @@ def click_find_result():
     """Пользователь нажимает кнопку «Рассчитать» """
     submit = DRIVER.find_element_by_class_name("submit_button")
     submit.click()
-    time.sleep(10)
 
 
-# def check_results():
-#     """Пользователь проверяет что рассчитанное расстояние = 897 км, а стоимость топлива = 3726 руб."""
-#     pass
+def check_results():
+    """Пользователь проверяет что рассчитанное расстояние = 897 км, а стоимость топлива = 3726 руб."""
+    current_distance = 897
+    current_fuel = 3726
+    result = DRIVER.find_element_by_id("summaryContainer").text
+    distance = int(re.search(r"Расстояние: \d*", result).group(0).split(" ")[-1])
+    fuel = int(re.search(r"= \d* руб", result).group(0).split(" ")[-2])
+    if current_distance == distance and current_fuel == fuel:
+        return True
+    else:
+        return False
 
 
-# def click_change_trip():
-#     """Пользователь кликает на «Изменить маршрут»"""
-#     pass
+
+def click_change_trip():
+    """Пользователь кликает на «Изменить маршрут»"""
+    pass
 
 
 # def enter_new_trip():
@@ -115,12 +126,14 @@ def close_ssesion():
 def main():
     open_yandex_url()
     enter_question()
-    elem = find_curent_url()
-    if elem:
-        go_to_curent_url(elem)
+    if find_curent_url() == True:
+        go_to_curent_url()
         enter_locations()
         click_find_result()
-    if not elem:
+    if check_results() == True:
+        click_change_trip()
+
+    if find_curent_url == False:
         DRIVER.quit()
 
     # global DRIVER
