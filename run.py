@@ -19,11 +19,11 @@ DRIVER = None
 def open_yandex_url():
     """Пользователь заходит на сайт Яндекс: www.yandex.ru"""
     global DRIVER
-    if platform == 'Linux':
+    if platform.system() == 'Linux':
         DRIVER = webdriver.Chrome(PATH_LINUX)
         DRIVER.get("https://yandex.ru/")
         print("System Linux")
-    if platform == "Win32":
+    if platform.system() == "Win32":
         DRIVER = webdriver.Chrome(PATH_WIN)
         DRIVER.get("https://yandex.ru/")
         print("System Windows")
