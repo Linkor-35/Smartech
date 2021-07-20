@@ -42,3 +42,6 @@
 > pip install -r req.txt
 -= Запуск скрипта =-
 > python run.py
+
+-= Запуск тестов =-
+....
