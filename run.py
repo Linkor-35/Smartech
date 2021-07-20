@@ -21,9 +21,11 @@ def open_yandex_url():
     if OS.sysname == 'Linux':
         DRIVER = webdriver.Chrome(PATH_LINUX)
         DRIVER.get("https://yandex.ru/")
+        print("System Linux")
     if OS.sysname == "Windows":
         DRIVER = webdriver.Chrome(PATH_WIN)
         DRIVER.get("https://yandex.ru/")
+        print("System Windows")
     
 
 
@@ -32,6 +34,7 @@ def enter_question():
     search = DRIVER.find_element_by_id("text")
     search.send_keys("расчет расстояний между городами")
     search.send_keys(Keys.RETURN)
+
 
 
 def find_curent_url():
@@ -49,6 +52,7 @@ def go_to_curent_url():
         href = elem.get_attribute('href')
         if href == "https://www.avtodispetcher.ru/distance/":
             elem.click()
+            break
 
    
 def enter_locations():
@@ -88,10 +92,12 @@ def check_results():
     """Пользователь проверяет что рассчитанное расстояние = 897 км, а стоимость топлива = 3726 руб."""
     current_distance = 897
     current_fuel = 3726
+    time.sleep(5)
     result = DRIVER.find_element_by_id("summaryContainer").text
     distance = int(re.search(r"Расстояние: \d*", result).group(0).split(" ")[-1])
     fuel = int(re.search(r"= \d* руб", result).group(0).split(" ")[-2])
     if current_distance == distance and current_fuel == fuel:
+        print("First result is current")
         return True
     else:
         return False
@@ -100,19 +106,35 @@ def check_results():
 
 def click_change_trip():
     """Пользователь кликает на «Изменить маршрут»"""
-    pass
+    # нет кнопки Изменить маршрут есть кнопка 
+    change = DRIVER.find_element_by_class_name("anchor")
+    change.click()
 
 
-# def enter_new_trip():
-#     """В открывшейся форме в поле «Через города» вводит «Великий Новгород» 
-#     Ждет 30 секунд и снова нажимает «Рассчитать»"""
-#     pass
 
+def enter_new_trip():
+    """В открывшейся форме в поле «Через города» вводит «Великий Новгород» 
+    Ждет 30 секунд и снова нажимает «Рассчитать»"""
+    in_destination = DRIVER.find_element_by_xpath("//*[@id='inter_points_field_parent']/input")
+    in_destination.send_keys("Великий Новгород")
+    # time.sleep(5)
+    in_destination.send_keys(Keys.ENTER)
 
-# def check_new_results():
-#     """Пользователь проверяет что расстояние теперь = 966 км, а стоимость топлива = 4002 руб."""
-#     pass
+    
 
+def check_new_results():
+    """Пользователь проверяет что расстояние теперь = 966 км, а стоимость топлива = 4002 руб."""
+    current_distance = 966
+    current_fuel = 4002
+    result = DRIVER.find_element_by_id("summaryContainer").text
+    distance = int(re.search(r"Расстояние: \d*", result).group(0).split(" ")[-1])
+    fuel = int(re.search(r"= \d* руб", result).group(0).split(" ")[-2])
+    if current_distance == distance and current_fuel == fuel:
+        print("Sekond result is current")
+        return True
+    else:
+        return False
+    
 
 def close_ssesion():
     DRIVER.quit()
@@ -120,7 +142,6 @@ def close_ssesion():
     13. После запуска сценария должен генерироваться отчет, в котором будет содержаться информация
     о выполненном тесте и скриншоты ошибок и результирующих расчетов чтобы пользователь мог 
     проверить корректность выполнения теста. """
-    pass
 
 
 def main():
@@ -132,20 +153,13 @@ def main():
         click_find_result()
     if check_results() == True:
         click_change_trip()
+        enter_new_trip()
+        if check_new_results() == True:
+            print("ALL test is DONE")
+        close_ssesion()
 
     if find_curent_url == False:
         DRIVER.quit()
-
-    # global DRIVER
-    # DRIVER = webdriver.Chrome(PATH_LINUX)
-    # DRIVER.get("https://www.avtodispetcher.ru/distance/")
-    
-    # check_results()
-    # click_change_trip()
-    # enter_new_trip()
-    # check_new_results()
-    close_ssesion()
-    
 
 
 if __name__ == "__main__":
