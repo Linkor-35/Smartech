@@ -4,11 +4,12 @@ from selenium.webdriver.common.keys import Keys
 import time
 import os
 import re
+from sys import platform
 
 
 PATH_LINUX = os.getcwd() + "/webdrivers/chromedriver"
 PATH_WIN = "/webdrivers/chromedriver.exe"
-OS = os.uname()
+# OS = os.uname()
 # caps = DesiredCapabilities().CHROME
 # caps["pageLoadStrategy"] = "normal"
 
@@ -18,15 +19,14 @@ DRIVER = None
 def open_yandex_url():
     """Пользователь заходит на сайт Яндекс: www.yandex.ru"""
     global DRIVER
-    if OS.sysname == 'Linux':
+    if platform == 'Linux':
         DRIVER = webdriver.Chrome(PATH_LINUX)
         DRIVER.get("https://yandex.ru/")
         print("System Linux")
-    if OS.sysname == "Windows":
+    if platform == "Win32":
         DRIVER = webdriver.Chrome(PATH_WIN)
         DRIVER.get("https://yandex.ru/")
         print("System Windows")
-    
 
 
 def enter_question():
@@ -34,7 +34,6 @@ def enter_question():
     search = DRIVER.find_element_by_id("text")
     search.send_keys("расчет расстояний между городами")
     search.send_keys(Keys.RETURN)
-
 
 
 def find_curent_url():
@@ -65,7 +64,6 @@ def enter_locations():
     # тут нужно запилить проверку на корректность ссылки. туда ли пришел
     tabs = DRIVER.window_handles
     DRIVER.switch_to.window(tabs[1])
-
 
     start_point = DRIVER.find_element_by_name("from")
     start_point.send_keys("Тула")
@@ -103,13 +101,11 @@ def check_results():
         return False
 
 
-
 def click_change_trip():
     """Пользователь кликает на «Изменить маршрут»"""
     # нет кнопки Изменить маршрут есть кнопка 
     change = DRIVER.find_element_by_class_name("anchor")
     change.click()
-
 
 
 def enter_new_trip():
@@ -120,7 +116,6 @@ def enter_new_trip():
     # time.sleep(5)
     in_destination.send_keys(Keys.ENTER)
 
-    
 
 def check_new_results():
     """Пользователь проверяет что расстояние теперь = 966 км, а стоимость топлива = 4002 руб."""
