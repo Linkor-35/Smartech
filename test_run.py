@@ -2,54 +2,51 @@ import unittest
 from selenium import webdriver
 import os
 
-class AvtoDispetcherTest(unittest.TestCase):
+
+class AutoDispatcherTest(unittest.TestCase):
+
     def setUp(self):
+        """ asc """
+
         if os.uname == 'Linux':
             self.driver = webdriver.Chrome("/webdrivers/chromedriver")
             self.driver.get("https://yandex.ru/")
-        if os.uname == "Windows":
+        if os.uname == "Win32":
             self.driver = webdriver.Chrome("/webdrivers/chromedriver.exe")
             self.driver.get("https://yandex.ru/")
 
-
     def test_check_yandex(self):
+        print(self.driver.title)
+        # title = self.driver.title
+        # print(title)
         pass
-    
 
     def test_enter_question(self):
         pass
 
-
     def test_results_yandex(self):
         pass
-    
 
     def test_find_result(self):
         pass
-    
 
     def test_route_to_autodispatsher(self):
         pass
-    
 
     def test_check_autodispatcher(self):
         pass
-    
 
     def test_enter_data(self):
         pass
-    
-    
+
     def test_results_1(self):
         pass
-    
 
     def test_results_1(self):
         pass
 
     def test_enter_new_data(self):
         pass
-    
 
     def test_results_2(self):
        pass
@@ -76,8 +73,8 @@ class AvtoDispetcherTest(unittest.TestCase):
     #     assert "Test Python" in eleYourMsg.text
  
     # Closing the browser.
-    def tearDown(self):
-        self.driver.close()
+    # def tearDown(self):
+    #     self.driver.close()
 
 
 if __name__ == "__main__":

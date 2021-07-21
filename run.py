@@ -8,10 +8,8 @@ from sys import platform
 
 
 PATH_LINUX = os.getcwd() + "/webdrivers/chromedriver"
-PATH_WIN = "/webdrivers/chromedriver.exe"
-# OS = os.uname()
-# caps = DesiredCapabilities().CHROME
-# caps["pageLoadStrategy"] = "normal"
+# PATH_WIN = "/webdrivers/chromedriver.exe"
+
 
 DRIVER = None
 
@@ -19,14 +17,15 @@ DRIVER = None
 def open_yandex_url():
     """Пользователь заходит на сайт Яндекс: www.yandex.ru"""
     global DRIVER
-    if platform.system() == 'Linux':
+    if platform == 'linux':
         DRIVER = webdriver.Chrome(PATH_LINUX)
+        DRIVER.maximize_window()
         DRIVER.get("https://yandex.ru/")
-        print("System Linux")
-    if platform.system() == "Win32":
-        DRIVER = webdriver.Chrome(PATH_WIN)
-        DRIVER.get("https://yandex.ru/")
-        print("System Windows")
+
+    # if platform == "win32":
+    #     DRIVER = webdriver.Chrome(PATH_WIN)
+    #     DRIVER.get("https://yandex.ru/")
+
 
 
 def enter_question():
@@ -113,7 +112,7 @@ def enter_new_trip():
     Ждет 30 секунд и снова нажимает «Рассчитать»"""
     in_destination = DRIVER.find_element_by_xpath("//*[@id='inter_points_field_parent']/input")
     in_destination.send_keys("Великий Новгород")
-    # time.sleep(5)
+    time.sleep(30)
     in_destination.send_keys(Keys.ENTER)
 
 
